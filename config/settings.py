@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 from decouple import config
 from datetime import timedelta
-
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -24,15 +24,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 #LIARA STORAGE
 # AWS_ACCESS_KEY_ID = config('LIARA_ACCESS_KEY')
-AWS_SECRET_ACCESS_KEY = config('LIARA_SECRET_KEY')
-AWS_ACCESS_KEY = config('LIARA_ACCESS_KEY')
-AWS_STORAGE_BUCKET_NAME = config('LIARA_BUCKET_NAME')
-AWS_END_POINT = config('LIARA_ENDPOINT')
-AWS_S3_REGION_NAME = 'us-east-1'
+# AWS_SECRET_ACCESS_KEY = config('LIARA_SECRET_KEY')
+# AWS_ACCESS_KEY = config('LIARA_ACCESS_KEY')
+# AWS_STORAGE_BUCKET_NAME = config('LIARA_BUCKET_NAME')
+# AWS_END_POINT = config('LIARA_ENDPOINT')
+# AWS_S3_REGION_NAME = 'us-east-1'
 
 # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
+
+# Media files settings
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY')
@@ -55,6 +59,7 @@ INSTALLED_APPS = [
     'channel.apps.ChannelConfig',
     'account.apps.AccountConfig',
     'drf_yasg',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [

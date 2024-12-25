@@ -1,6 +1,8 @@
 from django.urls import path
-from .views import CreatePostView
+from .views import ChanelDetailView, ChannelPostsAPIView
+
 
 urlpatterns = [
-    path('<str:channel_id>/posts/', CreatePostView.as_view(), name='channel-posts'),
+    path('detail', ChanelDetailView.as_view(), name='channel-posts'),
+    path('channels/<int:channel_id>/posts/', ChannelPostsAPIView.as_view(), name = 'channel-posts'),
 ]

@@ -4,7 +4,7 @@ from .models import Post, Channel
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ['id', 'channel', 'content', 'media_file', 'scheduled_at', 'created_at']
+        fields = ['id', 'channel', 'content', 'file', 'scheduled_at', 'created_at', 'is_free', 'created_by', 'is_deleted']
 
 
 class ChannelSerializer(serializers.ModelSerializer):

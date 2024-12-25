@@ -10,7 +10,6 @@ from django.conf import settings
 import uuid
 
 class Channel(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     creator = models.ForeignKey(
@@ -41,9 +40,10 @@ class Channel(models.Model):
 class Post(models.Model):
     channel = models.ForeignKey(Channel, on_delete=models.CASCADE, related_name="posts")
     content = models.TextField()
-    media_file = models.URLField(null=True, blank=True)  # AWS S3 file URL
+    file = models.FileField(upload_to='uploads/')
     scheduled_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    is_free = models.BooleanField(default=False)
     created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="posts")
     is_deleted = models.BooleanField(default=False)
     def __str__(self):

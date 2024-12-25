@@ -2,9 +2,6 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import generics
 from rest_framework import status
-import jwt
-from rest_framework.exceptions import AuthenticationFailed
-from django.conf import settings
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from rest_framework.permissions import IsAuthenticated
@@ -16,8 +13,6 @@ class RegisterView(APIView):
     def post(self, request):
         password = request.data.get('password')
         email = request.data.get('email')
-        is_student = request.data.get('is_student', False)
-        is_educator = request.data.get('is_educator', False)
 
         if not email or not password:
             return Response({"error": "All fields are required."}, status=status.HTTP_400_BAD_REQUEST)
@@ -30,7 +25,9 @@ class RegisterView(APIView):
             "access": str(refresh.access_token),
         }, status=status.HTTP_201_CREATED)
 
+
 class LoginView(APIView):
+
     def post(self, request):
         email = request.data.get('email')
         password = request.data.get('password')
@@ -43,6 +40,7 @@ class LoginView(APIView):
                 "access": str(refresh.access_token),
             }, status=status.HTTP_200_OK)
         return Response({"error": "Invalid credentials."}, status=status.HTTP_401_UNAUTHORIZED)
+
 
 class ResetPasswordView(APIView):
     """
@@ -87,3 +85,43 @@ class CreateStudentProfileView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save(user=user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class StudentProfileCreateUpdateView(generics.RetrieveUpdateAPIView):
+    queryset = StudentProfile.objects.all()
+    serializer_class = StudentProfileSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return StudentProfile.objects.get(user=self.request.user)
+
+    def update(self, request, *args, **kwargs):
+        user = request.user
+        instance = self.get_object()
+        if instance.user != user:
+            return Response(
+                {"error": "You can only update your own profile."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        # Filter out 'purchased_channels' to ensure it is not in the request body
+        data = request.data.copy()
+        if 'purchased_channels' in data:
+            return Response(
+                {"error": "You cannot update purchased_channels."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        serializer = self.get_serializer(instance, data=data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data)
+
+    def retrieve(self, request, *args, **kwargs):
+        user = request.user
+        instance = self.get_object()
+        if instance.user != user:
+            return Response(
+                {"error": "You can only view your own profile."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        return super().retrieve(request, *args, **kwargs)
+
