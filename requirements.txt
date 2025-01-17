@@ -7,3 +7,5 @@ cryptography>=41.0  # For enhanced security (used in authentication)
 python-decouple
 djangorestframework-simplejwt
 pillow
+g4f
+drf-yasg

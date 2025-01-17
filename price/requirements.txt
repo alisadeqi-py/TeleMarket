@@ -1,0 +1,11 @@
+Django>=4.2,<4.3  # Latest Long-Term Support (LTS) version
+psycopg2>=2.9    # PostgreSQL adapter for Python
+djangorestframework>=3.14  # For building RESTful APIs
+django-cors-headers>=3.14  # To handle CORS headers for the API
+django-environ>=0.10  # For environment variable management
+cryptography>=41.0  # For enhanced security (used in authentication)
+python-decouple
+djangorestframework-simplejwt
+pillow
+g4f
+drf-yasg
